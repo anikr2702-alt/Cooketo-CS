@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Coming Soon</title>
+<style>
+  :root{
+    --cream:#FDF7E7;
+    --green:#097D4C;
+    --orange:#F58A00;
+    --ink:#0B2A1D;
+    --muted:#4B6B5C;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    overflow-x:hidden;
+  }
+  /* ambient animated field */
+  .field{position:fixed;inset:0;overflow:hidden;z-index:0}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.16;will-change:transform}
+  .b1{width:46vw;height:46vw;left:-10vw;top:-12vw;background:var(--green);animation:drift1 22s ease-in-out infinite}
+  .b2{width:38vw;height:38vw;right:-8vw;top:8vh;background:var(--orange);animation:drift2 26s ease-in-out infinite}
+  .b3{width:42vw;height:42vw;left:22vw;bottom:-20vw;background:#0BA163;opacity:.12;animation:drift3 30s ease-in-out infinite}
+  @keyframes drift1{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(6vw,5vh,0) scale(1.12)}}
+  @keyframes drift2{0%,100%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(-7vw,7vh,0) scale(.92)}}
+  @keyframes drift3{0%,100%{transform:translate3d(0,0,0) scale(.95)}50%{transform:translate3d(5vw,-6vh,0) scale(1.1)}}
+
+  .grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(9,125,76,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(9,125,76,.07) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(circle at 50% 40%,#000 20%,transparent 78%);
+    -webkit-mask-image:radial-gradient(circle at 50% 40%,#000 20%,transparent 78%);
+  }
+  .spot{position:fixed;width:520px;height:520px;border-radius:50%;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,rgba(245,138,0,.16),transparent 62%);
+    transform:translate(-50%,-50%);transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+
+  .wrap{position:relative;z-index:2;min-height:100%;display:flex;flex-direction:column;
+    max-width:1080px;margin:0 auto;padding:32px 32px 40px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:650;letter-spacing:-.01em}
+  .logo img{height:88px;width:auto;max-width:300px;object-fit:contain;display:block}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+    border:1px solid rgba(9,125,76,.25);background:rgba(255,255,255,.55);backdrop-filter:blur(8px);
+    font-size:14px;color:var(--green);font-weight:600}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.45}}
+
+  main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:44px 0 8px}
+  h1{margin:0;font-size:clamp(46px,8.6vw,104px);line-height:.96;letter-spacing:-.035em;font-weight:700}
+  h1 .line{display:block;overflow:hidden;padding-bottom:.06em}
+  h1 .line span{display:block;transform:translateY(110%);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+  h1 .line:nth-child(2) span{animation-delay:.12s}
+  .accent{color:var(--green)}
+  .accent em{font-style:normal;color:var(--orange)}
+  @keyframes rise{to{transform:translateY(0)}}
+
+  .sub{margin:24px 0 0;max-width:560px;font-size:18px;line-height:1.6;color:var(--muted);
+    opacity:0;animation:fade .8s ease .5s forwards}
+  @keyframes fade{to{opacity:1}}
+
+  .count{display:flex;gap:12px;margin:40px 0 0;flex-wrap:wrap;opacity:0;animation:fade .8s ease .68s forwards}
+  .unit{min-width:104px;flex:0 0 auto;padding:16px 18px;border-radius:12px;
+    background:rgba(255,255,255,.78);border:1px solid rgba(9,125,76,.20);backdrop-filter:blur(10px);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .unit b{display:block;font-size:36px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--green)}
+  .unit small{display:block;margin-top:8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  .ask{margin:48px 0 0;opacity:0;animation:fade .8s ease .82s forwards}
+  .ask h2{margin:0 0 6px;font-size:24px;letter-spacing:-.015em;font-weight:680}
+  .ask .lead{margin:0 0 20px;font-size:15px;color:var(--muted)}
+  .ask-card{max-width:620px;padding:24px;border-radius:12px;
+    border:1px solid rgba(9,125,76,.20);background:rgba(255,255,255,.82);backdrop-filter:blur(10px);
+    box-shadow:0 1px 2px rgba(0,0,0,.05),0 4px 12px rgba(0,0,0,.04)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .fld{display:flex;flex-direction:column;gap:8px;flex:1 1 240px;margin-bottom:16px}
+  .fld label{font-size:13px;font-weight:600;letter-spacing:.01em;color:var(--ink)}
+  .fld input,.fld textarea{width:100%;padding:13px 14px;border-radius:10px;font:inherit;font-size:16px;
+    color:var(--ink);background:#fff;border:1px solid rgba(9,125,76,.28);outline:none;
+    transition:border-color .15s ease,box-shadow .15s ease}
+  .fld textarea{min-height:120px;resize:vertical;line-height:1.5}
+  .fld input::placeholder,.fld textarea::placeholder{color:#98A99F}
+  .fld input:focus,.fld textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(9,125,76,.15)}
+  .fld .err{font-size:13px;color:#B4451F;min-height:0}
+  .fld.invalid input,.fld.invalid textarea{border-color:#C0552B}
+  .hp{position:absolute;left:-9999px}
+  .actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:4px}
+  .btn{min-height:52px;padding:0 28px;border:0;border-radius:10px;cursor:pointer;
+    background:var(--green);color:var(--cream);font-size:16px;font-weight:650;
+    transition:transform .18s ease,background .18s ease}
+  .btn:hover{background:var(--orange);transform:translateY(-2px)}
+  .btn:disabled{opacity:.6;cursor:progress;transform:none}
+  .ask-note{font-size:14px;color:var(--muted)}
+  .ask-status{margin:16px 0 0;font-size:15px;font-weight:600;min-height:22px}
+  .fld input:focus-visible,.fld textarea:focus-visible,.btn:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+  @media (max-width:600px){
+    .ask-card{padding:20px}
+    .row .fld{flex:1 1 100%}
+    .btn{width:100%}
+  }
+  footer{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+    padding-top:24px;margin-top:32px;border-top:1px solid rgba(9,125,76,.16);
+    font-size:14px;color:var(--muted);opacity:0;animation:fade .8s ease 1s forwards}
+  footer a{color:var(--green);text-decoration:none;font-weight:600}
+  footer a:hover{color:var(--orange)}
+
+  @media (max-width:600px){
+    .wrap{padding:24px 20px 32px}
+    .unit{min-width:calc(50% - 6px);flex:1 1 calc(50% - 6px)}
+    .spot{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    h1 .line span{transform:none}
+    .sub,.count,.ask,footer{opacity:1}
+  }
+</style>
+</head>
+<body>
+  <div class="field" aria-hidden="true">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  </div>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="spot" id="spot" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="logo"><img src="logo.png" alt="Logo" /></div>
+      <span class="pill"><span class="dot" aria-hidden="true"></span>Launching soon</span>
+    </header>
+
+    <main>
+      <h1>
+        <span class="line"><span>Something good</span></span>
+        <span class="line"><span class="accent">is <em>cooking</em>.</span></span>
+      </h1>
+      <p class="sub">We're putting the final touches on something new. Follow along on Instagram — that's where the reveal happens first.</p>
+
+      <div class="count" id="count" role="timer" aria-live="off">
+        <div class="unit"><b id="d">00</b><small>Days</small></div>
+        <div class="unit"><b id="h">00</b><small>Hours</small></div>
+        <div class="unit"><b id="m">00</b><small>Minutes</small></div>
+        <div class="unit"><b id="s">00</b><small>Seconds</small></div>
+      </div>
+
+
+      <section class="ask" aria-labelledby="ask-h">
+        <h2 id="ask-h">Have a question?</h2>
+        <p class="lead">Please fill out the form below with your details and question. Our team will get back to you shortly.</p>
+
+        <form class="ask-card" id="askForm" action="https://formsubmit.co/setutechpvtltd@gmail.com" method="POST" novalidate>
+          <!-- FormSubmit config -->
+          <input type="hidden" name="_subject" value="New question from Coming Soon page" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <div class="row">
+            <div class="fld" data-fld>
+              <label for="q-name">Your name</label>
+              <input id="q-name" name="Name" type="text" placeholder="Rahul Sharma" autocomplete="name" required />
+              <span class="err" data-err></span>
+            </div>
+            <div class="fld" data-fld>
+              <label for="q-phone">Phone number</label>
+              <input id="q-phone" name="Phone" type="tel" placeholder="+91 98765 XXXXX" autocomplete="tel"
+                     inputmode="tel" pattern="[0-9+()\-\s]{7,20}" required />
+              <span class="err" data-err></span>
+            </div>
+          </div>
+
+          <div class="fld" data-fld>
+            <label for="q-msg">Your question</label>
+            <textarea id="q-msg" name="Question" placeholder="What would you like to know?" required></textarea>
+            <span class="err" data-err></span>
+          </div>
+
+          <div class="actions">
+            <button class="btn" type="submit">Submit question</button>
+            <span class="ask-note">We usually reply within a day.</span>
+          </div>
+        </form>
+        <p class="ask-status" id="askStatus" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <footer>
+      <span>© <span id="yr">2026</span> All rights reserved</span>
+      <span><a href="https://www.instagram.com/c00keto.in/" target="_blank" rel="noopener">Instagram</a></span>
+    </footer>
+  </div>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // countdown: 30 days out
+  var target = new Date(Date.now() + (28*24*60*60 + 16*60*60 + 33*60 + 42)*1000);
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  function tick(){
+    var t = Math.max(0, target - new Date());
+    var s = Math.floor(t/1000);
+    document.getElementById('d').textContent = pad(Math.floor(s/86400));
+    document.getElementById('h').textContent = pad(Math.floor(s%86400/3600));
+    document.getElementById('m').textContent = pad(Math.floor(s%3600/60));
+    document.getElementById('s').textContent = pad(s%60);
+  }
+  tick(); setInterval(tick, 1000);
+
+  // cursor spotlight
+  var spot = document.getElementById('spot');
+  spot.style.left = '50%'; spot.style.top = '45%';
+  window.addEventListener('pointermove', function(e){
+    spot.style.left = e.clientX + 'px';
+    spot.style.top = e.clientY + 'px';
+  });
+
+
+  // ask-a-question form -> emails the site owner via FormSubmit
+  (function(){
+    var form = document.getElementById('askForm');
+    var out  = document.getElementById('askStatus');
+    if(!form) return;
+
+    function setErr(field, msg){
+      var box = field.closest('[data-fld]');
+      box.classList.toggle('invalid', !!msg);
+      box.querySelector('[data-err]').textContent = msg || '';
+      return !msg;
+    }
+    function validate(){
+      var ok = true;
+      var n = form.elements['Name'], p = form.elements['Phone'], q = form.elements['Question'];
+      ok = setErr(n, n.value.trim().length < 2 ? 'Please enter your name.' : '') && ok;
+      var digits = p.value.replace(/\D/g,'');
+      ok = setErr(p, (digits.length < 7 || digits.length > 15) ? 'Please enter a valid phone number.' : '') && ok;
+      ok = setErr(q, q.value.trim().length < 5 ? 'Please write your question.' : '') && ok;
+      return ok;
+    }
+    ['Name','Phone','Question'].forEach(function(k){
+      form.elements[k].addEventListener('input', function(){ setErr(this, ''); });
+    });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      out.textContent = '';
+      if(!validate()){ out.style.color = '#B4451F'; out.textContent = 'Please fix the fields above.'; return; }
+
+      var btn = form.querySelector('button[type=submit]');
+      var label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Sending…';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(function(r){
+        if(!r.ok) throw new Error('bad response');
+        form.reset();
+        out.style.color = '#097D4C';
+        out.textContent = 'Thanks! Your question is on its way — we\'ll get back to you soon.';
+      }).catch(function(){
+        out.style.color = '#B4451F';
+        out.textContent = 'Kuch gadbad ho gayi. Thodi der baad try karo ya Instagram par DM kar do.';
+      }).then(function(){
+        btn.disabled = false; btn.textContent = label;
+      });
+    });
+  })();
+</script>
+</body>
+</html>
